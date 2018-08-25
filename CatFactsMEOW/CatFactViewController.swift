@@ -8,8 +8,7 @@
 
 import UIKit
 
-class 
-troller: UIViewController {
+class CatFactViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -17,15 +16,19 @@ troller: UIViewController {
     }
 
     @IBAction func gimmeCatFact(_ sender: Any) {
-        let url = URL(string: "https://cat-fact.herokuappp.com/facts/random")!
-        let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
-            if let data = data, let response = response {
-                print(data)
-                print("")
-                print(response)
-            }
+        let catFact = fetchOnlineCatFact()
+    }
+    func fetchOnlineCatFact(completion: @escaping (CatFact) -> Void ) {
+    let url = URL(string: "https://cat-fact.herokuapp.com/Facts/Random")!
+    let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+        let jsonDecoder = JSONDecoder()
+        if let data = data,
+            let catFact = try? jsonDecoder.decode(CatFact.self, from:data) {
+            completion(catFact)
+            
         }
     }
-    
+    task.resume() //😘
+    }
 }
 
